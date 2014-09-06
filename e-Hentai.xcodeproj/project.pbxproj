@@ -51,6 +51,7 @@
 		04376DFD19B96B76001B1599 /* GalleryCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 04376DFB19B96B76001B1599 /* GalleryCell.xib */; };
 		04376E0019B96B9C001B1599 /* CategoryTitle.m in Sources */ = {isa = PBXBuildFile; fileRef = 04376DFF19B96B9C001B1599 /* CategoryTitle.m */; };
 		04376E0319B96BAE001B1599 /* RatingStar.m in Sources */ = {isa = PBXBuildFile; fileRef = 04376E0219B96BAE001B1599 /* RatingStar.m */; };
+		1A54265919BAD71D009F2164 /* Pad_Main_VCLR.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A54265819BAD71D009F2164 /* Pad_Main_VCLR.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -142,6 +143,8 @@
 		04376DFF19B96B9C001B1599 /* CategoryTitle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryTitle.m; sourceTree = "<group>"; };
 		04376E0119B96BAE001B1599 /* RatingStar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RatingStar.h; sourceTree = "<group>"; };
 		04376E0219B96BAE001B1599 /* RatingStar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RatingStar.m; sourceTree = "<group>"; };
+		1A54265719BAD71D009F2164 /* Pad_Main_VCLR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Pad_Main_VCLR.h; sourceTree = "<group>"; };
+		1A54265819BAD71D009F2164 /* Pad_Main_VCLR.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Pad_Main_VCLR.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -184,6 +187,8 @@
 			children = (
 				0118080E19B6F06200FE0DA1 /* MainViewController.h */,
 				0118080F19B6F06200FE0DA1 /* MainViewController.m */,
+				1A54265719BAD71D009F2164 /* Pad_Main_VCLR.h */,
+				1A54265819BAD71D009F2164 /* Pad_Main_VCLR.m */,
 				0118081019B6F06200FE0DA1 /* MainViewController.xib */,
 				04376DF819B96B76001B1599 /* GalleryCell */,
 			);
@@ -479,6 +484,7 @@
 				0150034619B6E5E90055F47D /* XPathQuery.m in Sources */,
 				0118081619B6F06200FE0DA1 /* HentaiNavigationController.m in Sources */,
 				040541C119B8182400139AC9 /* SDWebImageDownloaderOperation.m in Sources */,
+				1A54265919BAD71D009F2164 /* Pad_Main_VCLR.m in Sources */,
 				0150034419B6E5E90055F47D /* TFHpple.m in Sources */,
 				040541BD19B8182400139AC9 /* SDImageCache.m in Sources */,
 				0199269919ADDB83009F814B /* AppDelegate.m in Sources */,
@@ -628,6 +634,7 @@
 				INFOPLIST_FILE = "e-Hentai/e-Hentai-Info.plist";
 				OTHER_LDFLAGS = "-lxml2";
 				PRODUCT_NAME = "e-Hentai";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -647,6 +654,7 @@
 				INFOPLIST_FILE = "e-Hentai/e-Hentai-Info.plist";
 				OTHER_LDFLAGS = "-lxml2";
 				PRODUCT_NAME = "e-Hentai";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
