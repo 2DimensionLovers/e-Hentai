@@ -119,7 +119,7 @@
 	self.listCollectionView.frame = screenSize;
     
 	//調整 filterView 的大小
-	CGFloat keyboardHeight = 264;
+	CGFloat keyboardHeight = 412;
 	CGRect filterFrame = CGRectMake(0, 0, CGRectGetWidth(screenSize), CGRectGetHeight(screenSize) - keyboardHeight - 64);
 	filterView = [[HentaiFilterView alloc] initWithFrame:filterFrame];
 	self.searchBar.inputAccessoryView = filterView;
