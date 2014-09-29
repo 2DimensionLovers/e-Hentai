@@ -10,6 +10,9 @@
 #import "HentaiSearchFilter.h"
 #import "HentaiFilterView.h"
 
+//avoid import cycle
+#import "DownloadedViewController.h"
+
 @interface MainViewController ()
 {
 	BOOL enableH_Image;
@@ -193,8 +196,14 @@
 	self.navigationItem.titleView = self.searchBar;
 	self.searchBar.delegate = self;
     
+    //調整畫面的大小
+    CGRect screenSize = [UIScreen mainScreen].bounds;
+    self.view.frame = screenSize;
+    self.listCollectionView.frame = screenSize;
+    
+    //調整 filterView 的大小
 	CGFloat keyboardHeight = 216;
-	CGRect filterFrame = CGRectMake(0, 0, CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame) - keyboardHeight - 64);
+	CGRect filterFrame = CGRectMake(0, 0, CGRectGetWidth(screenSize), CGRectGetHeight(screenSize) - keyboardHeight - 64);
 	filterView = [[HentaiFilterView alloc] initWithFrame:filterFrame];
 	self.searchBar.inputAccessoryView = filterView;
     
@@ -218,6 +227,12 @@
 	self.listCollectionView.dataSource = nil;
 	self.listCollectionView.delegate = nil;
 	self.searchBar.delegate = nil;
+}
+
+#pragma mark - ibaction
+
+- (IBAction)pushToDownloadedAction:(id)sender {
+	[self.navigationController pushViewController:[[DownloadedViewController alloc] initWithNibName:@"MainViewController" bundle:nil] animated:YES];
 }
 
 #pragma mark - actions
