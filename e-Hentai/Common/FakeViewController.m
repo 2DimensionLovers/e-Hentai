@@ -14,8 +14,7 @@
 
 @implementation FakeViewController
 
-- (void)onPresentCompletion
-{
+- (void)onPresentCompletion {
 	[self dismissViewControllerAnimated:NO completion: ^{
 	    self.BackBlock();
 	}];

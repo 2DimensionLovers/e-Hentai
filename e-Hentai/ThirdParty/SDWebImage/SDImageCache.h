@@ -9,26 +9,26 @@
 #import <Foundation/Foundation.h>
 #import "SDWebImageCompat.h"
 
-typedef NS_ENUM(NSInteger, SDImageCacheType) {
-    /**
-     * The image wasn't available the SDWebImage caches, but was downloaded from the web.
-     */
-    SDImageCacheTypeNone,
-    /**
-     * The image was obtained from the disk cache.
-     */
-    SDImageCacheTypeDisk,
-    /**
-     * The image was obtained from the memory cache.
-     */
-    SDImageCacheTypeMemory
+typedef NS_ENUM (NSInteger, SDImageCacheType) {
+	/**
+	 * The image wasn't available the SDWebImage caches, but was downloaded from the web.
+	 */
+	SDImageCacheTypeNone,
+	/**
+	 * The image was obtained from the disk cache.
+	 */
+	SDImageCacheTypeDisk,
+	/**
+	 * The image was obtained from the memory cache.
+	 */
+	SDImageCacheTypeMemory
 };
 
-typedef void(^SDWebImageQueryCompletedBlock)(UIImage *image, SDImageCacheType cacheType);
+typedef void (^SDWebImageQueryCompletedBlock)(UIImage *image, SDImageCacheType cacheType);
 
-typedef void(^SDWebImageCheckCacheCompletionBlock)(BOOL isInCache);
+typedef void (^SDWebImageCheckCacheCompletionBlock)(BOOL isInCache);
 
-typedef void(^SDWebImageCalculateSizeBlock)(NSUInteger fileCount, NSUInteger totalSize);
+typedef void (^SDWebImageCalculateSizeBlock)(NSUInteger fileCount, NSUInteger totalSize);
 
 /**
  * SDImageCache maintains a memory cache and an optional disk cache. Disk cache write operations are performed

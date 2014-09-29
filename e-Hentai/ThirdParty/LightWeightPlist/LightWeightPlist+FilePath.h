@@ -8,8 +8,8 @@
 
 #import "LightWeightPlist.h"
 
-#define lwpResourceFile(fmt) [LightWeightPlist resourceFolderPathWithFilename:fmt]
-#define lwpDocumentFile(fmt) [LightWeightPlist documentFolderPathWithFilename:fmt]
+#define lwpResourceFile(fmt) [LightWeightPlist resourceFolderPathWithFilename : fmt]
+#define lwpDocumentFile(fmt) [LightWeightPlist documentFolderPathWithFilename : fmt]
 
 @interface LightWeightPlist (FilePath)
 

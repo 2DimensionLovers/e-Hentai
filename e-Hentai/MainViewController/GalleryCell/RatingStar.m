@@ -28,10 +28,9 @@
 }
 
 - (void)drawRect:(CGRect)rect {
-    
 	int aSize = CGRectGetWidth(rect);
 	const CGFloat color[4] = { 255.0 / 255.0, 215.0 / 255.0, 0.0, 1.0 }; // Gold
-    CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();
+	CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();
 	CGColorRef aColor = CGColorCreate(colorspace, color);
 	CGContextRef context = UIGraphicsGetCurrentContext();
 	CGContextSetLineWidth(context, aSize);
@@ -77,8 +76,8 @@
 	                               CGRectGetMidY(rect) - fontSize / 2,
 	                               fontSize,
 	                               fontSize)];
-    CGColorRelease(aColor);
-    CGColorSpaceRelease(colorspace);
+	CGColorRelease(aColor);
+	CGColorSpaceRelease(colorspace);
 }
 
 @end
