@@ -14,12 +14,11 @@
 
 #pragma mark - class method
 
-+ (LightWeightPlistObjects *)objects
-{
++ (LightWeightPlistObjects *)objects {
 	static dispatch_once_t onceToken;
 	dispatch_once(&onceToken, ^{
 	    LightWeightPlistObjects *objects = [LightWeightPlistObjects new];
-	    [objects.dataCache setDelegate:(id <NSCacheDelegate>)self];
+	    [objects.dataCache setDelegate:(id < NSCacheDelegate >)self];
 	    objc_setAssociatedObject(self, _cmd, objects, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 	});
 	return objc_getAssociatedObject(self, _cmd);

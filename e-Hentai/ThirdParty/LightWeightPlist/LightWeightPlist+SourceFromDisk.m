@@ -15,44 +15,42 @@
 
 #pragma mark - class method
 
-+ (NSMutableArray *)arrayInDocument:(NSString *)key
-{
++ (NSMutableArray *)arrayInDocument:(NSString *)key {
 	return [self getPlistFile:key isArray:YES inResource:NO];
 }
 
-+ (NSMutableArray *)arrayInResource:(NSString *)key
-{
++ (NSMutableArray *)arrayInResource:(NSString *)key {
 	return [self getPlistFile:key isArray:YES inResource:YES];
 }
 
-+ (NSMutableDictionary *)dictionaryInDocument:(NSString *)key
-{
++ (NSMutableDictionary *)dictionaryInDocument:(NSString *)key {
 	return [self getPlistFile:key isArray:NO inResource:NO];
 }
 
-+ (NSMutableDictionary *)dictionaryInResource:(NSString *)key
-{
++ (NSMutableDictionary *)dictionaryInResource:(NSString *)key {
 	return [self getPlistFile:key isArray:NO inResource:YES];
 }
 
 #pragma mark - private
 
-+ (id)getPlistFile:(NSString *)filename isArray:(BOOL)isArray inResource:(BOOL)inResource
-{
++ (id)getPlistFile:(NSString *)filename isArray:(BOOL)isArray inResource:(BOOL)inResource {
 	NSString *path;
     
 	if (inResource) {
 		path = lwpResourceFile(filename);
-	} else {
+	}
+	else {
 		path = lwpDocumentFile(filename);
 	}
     
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
 		return nil;
-	} else {
+	}
+	else {
 		if (isArray) {
 			return [NSMutableArray arrayWithContentsOfFile:path];
-		} else {
+		}
+		else {
 			return [NSMutableDictionary dictionaryWithContentsOfFile:path];
 		}
 	}

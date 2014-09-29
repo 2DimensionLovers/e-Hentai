@@ -14,19 +14,19 @@
 
 + (FMStream *)documentFolder {
 	FMStream *newStream = [FMStream new];
-    newStream.basePath = [self documentFolderPathString];
+	newStream.basePath = [self documentFolderPathString];
 	return newStream;
 }
 
 + (FMStream *)resourceFolder {
 	FMStream *newStream = [FMStream new];
-    newStream.basePath = [self resourceFolderPathString];
+	newStream.basePath = [self resourceFolderPathString];
 	return newStream;
 }
 
 + (FMStream *)cacheFolder {
 	FMStream *newStream = [FMStream new];
-    newStream.basePath = [self cacheFolderPathString];
+	newStream.basePath = [self cacheFolderPathString];
 	return newStream;
 }
 

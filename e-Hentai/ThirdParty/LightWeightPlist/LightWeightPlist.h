@@ -8,11 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
-#define LWPArray(fmt) [LightWeightPlist lwpArray:fmt]
-#define LWPArrayR(fmt) [LightWeightPlist lwpArrayFromResource:fmt]
-#define LWPDictionary(fmt) [LightWeightPlist lwpDictionary:fmt]
-#define LWPDictionaryR(fmt) [LightWeightPlist lwpArrayFromResource:fmt]
-#define LWPDelete(fmt) [LightWeightPlist lwpDelete:fmt]
+#define LWPArray(fmt) [LightWeightPlist lwpArray : fmt]
+#define LWPArrayR(fmt) [LightWeightPlist lwpArrayFromResource : fmt]
+#define LWPDictionary(fmt) [LightWeightPlist lwpDictionary : fmt]
+#define LWPDictionaryR(fmt) [LightWeightPlist lwpArrayFromResource : fmt]
+#define LWPDelete(fmt) [LightWeightPlist lwpDelete : fmt]
 #define LWPForceWrite() [LightWeightPlist lwpForceWrite]
 
 @interface LightWeightPlist : NSObject

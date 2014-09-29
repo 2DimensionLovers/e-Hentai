@@ -17,75 +17,69 @@
 
 #pragma mark - common
 
-+ (void)lwpDelete:(NSString *)key
-{
++ (void)lwpDelete:(NSString *)key {
 	[[NSFileManager defaultManager] removeItemAtPath:lwpDocumentFile(key) error:NULL];
-    [self removeObjectFromCache:key];
+	[self removeObjectFromCache:key];
 }
 
-+ (void)lwpForceWrite
-{
++ (void)lwpForceWrite {
 	[lwpCache removeAllObjects];
 }
 
 #pragma mark - array
 
-+ (NSMutableArray *)lwpArray:(NSString *)key
-{
++ (NSMutableArray *)lwpArray:(NSString *)key {
 	if (![self objectFromCache:key]) {
-        NSMutableArray *returnObject;
+		NSMutableArray *returnObject;
 		returnObject = [self arrayInDocument:key];
 		if (!returnObject) {
 			returnObject = [self arrayInResource:key];
 			if (!returnObject) {
-                returnObject = [NSMutableArray array];
+				returnObject = [NSMutableArray array];
 			}
 		}
-        [self setObjectToCache:returnObject withKey:key];
+		[self setObjectToCache:returnObject withKey:key];
 	}
 	return [self objectFromCache:key];
 }
 
-+ (NSMutableArray *)lwpArrayFromResource:(NSString *)key
-{
++ (NSMutableArray *)lwpArrayFromResource:(NSString *)key {
 	if (![self objectFromCache:key]) {
 		NSMutableArray *returnObject;
-        returnObject = [self arrayInResource:key];
+		returnObject = [self arrayInResource:key];
 		if (!returnObject) {
-            returnObject = [NSMutableArray array];
+			returnObject = [NSMutableArray array];
 		}
-        [self setObjectToCache:returnObject withKey:key];
+		[self setObjectToCache:returnObject withKey:key];
 	}
 	return [self objectFromCache:key];
 }
 
 #pragma mark - dictionary
 
-+ (NSMutableDictionary *)lwpDictionary:(NSString *)key
-{
++ (NSMutableDictionary *)lwpDictionary:(NSString *)key {
 	if (![self objectFromCache:key]) {
 		NSMutableDictionary *returnObject;
-        returnObject = [self dictionaryInDocument:key];
+		returnObject = [self dictionaryInDocument:key];
 		if (!returnObject) {
 			returnObject = [self dictionaryInResource:key];
 			if (!returnObject) {
-                returnObject = [NSMutableDictionary dictionary];
+				returnObject = [NSMutableDictionary dictionary];
 			}
 		}
-        [self setObjectToCache:returnObject withKey:key];
+		[self setObjectToCache:returnObject withKey:key];
 	}
 	return [self objectFromCache:key];
 }
 
-+ (NSMutableDictionary *)lwpDictionaryFromResource:(NSString *)key
-{
++ (NSMutableDictionary *)lwpDictionaryFromResource:(NSString *)key {
 	if (![self objectFromCache:key]) {
 		NSMutableDictionary *returnObject;
-        returnObject = [self dictionaryInResource:key];
+		returnObject = [self dictionaryInResource:key];
 		if (!returnObject) {
-            returnObject = [NSMutableDictionary dictionary];
+			returnObject = [NSMutableDictionary dictionary];
 		}
-        [self setObjectToCache:returnObject withKey:key];
+		[self setObjectToCache:returnObject withKey:key];
 	}
 	return [self objectFromCache:key];
 }

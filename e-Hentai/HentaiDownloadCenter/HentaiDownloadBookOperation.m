@@ -64,7 +64,7 @@
 - (NSString *)hentaiKey {
 	NSArray *splitStrings = [self.bookInfo[@"url"] componentsSeparatedByString:@"/"];
 	NSUInteger splitCount = [splitStrings count];
-    NSString *checkHentaiKey = [NSString stringWithFormat:@"%@-%@-%@", splitStrings[splitCount - 3], splitStrings[splitCount - 2], self.bookInfo[@"title"]];
+	NSString *checkHentaiKey = [NSString stringWithFormat:@"%@-%@-%@", splitStrings[splitCount - 3], splitStrings[splitCount - 2], self.bookInfo[@"title"]];
 	return [checkHentaiKey stringByReplacingOccurrencesOfString:@"/" withString:@"-"];
 }
 
@@ -85,7 +85,7 @@
 		self.retryMap[urlString] = retryCount;
         
 		if ([retryCount integerValue] <= 3) {
-            [self createNewOperation:urlString];
+			[self createNewOperation:urlString];
 		}
 		else {
 			self.failCount++;
@@ -113,7 +113,7 @@
 //將要下載的圖片加到 queue 裡面
 - (void)preloadImages:(NSArray *)images {
 	for (NSString *eachImageString in images) {
-        [self createNewOperation:eachImageString];
+		[self createNewOperation:eachImageString];
 	}
 }
 
@@ -153,15 +153,15 @@
 	}
 	else {
 		if (![self isCancelled]) {
-            NSDictionary *saveInfo = @{ @"hentaiKey":self.hentaiKey, @"images":self.hentaiImageURLs, @"hentaiResult":self.hentaiResults, @"hentaiInfo":self.bookInfo };
-            [HentaiSaveLibraryArray addObject:saveInfo];
+			NSDictionary *saveInfo = @{ @"hentaiKey":self.hentaiKey, @"images":self.hentaiImageURLs, @"hentaiResult":self.hentaiResults, @"hentaiInfo":self.bookInfo };
+			[HentaiSaveLibraryArray addObject:saveInfo];
             
-            //如果 cache 有暫存就殺光光
-            [[[FilesManager cacheFolder] fcd:@"Hentai"] rd:self.hentaiKey];
-            [HentaiCacheLibraryDictionary removeObjectForKey:self.hentaiKey];
-            LWPForceWrite();
-            [[NSNotificationCenter defaultCenter] postNotificationName:HentaiDownloadSuccessNotification object:self.bookInfo[@"title"]];
-            [self hentaiFinish];
+			//如果 cache 有暫存就殺光光
+			[[[FilesManager cacheFolder] fcd:@"Hentai"] rd:self.hentaiKey];
+			[HentaiCacheLibraryDictionary removeObjectForKey:self.hentaiKey];
+			LWPForceWrite();
+			[[NSNotificationCenter defaultCenter] postNotificationName:HentaiDownloadSuccessNotification object:self.bookInfo[@"title"]];
+			[self hentaiFinish];
 		}
 		else {
 			[self hentaiFinish];
@@ -172,12 +172,12 @@
 #pragma mark - private
 
 - (void)createNewOperation:(NSString *)urlString {
-    HentaiDownloadImageOperation *newOperation = [HentaiDownloadImageOperation new];
-    newOperation.downloadURLString = urlString;
-    newOperation.isCacheOperation = NO;
-    newOperation.hentaiKey = self.hentaiKey;
-    newOperation.delegate = self;
-    [self.hentaiQueue addOperation:newOperation];
+	HentaiDownloadImageOperation *newOperation = [HentaiDownloadImageOperation new];
+	newOperation.downloadURLString = urlString;
+	newOperation.isCacheOperation = NO;
+	newOperation.hentaiKey = self.hentaiKey;
+	newOperation.delegate = self;
+	[self.hentaiQueue addOperation:newOperation];
 }
 
 @end
