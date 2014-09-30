@@ -11,5 +11,5 @@
 @interface HentaiPhotoCell : UITableViewCell
 
 @property (weak, nonatomic) IBOutlet UIImageView *hentaiImageView;
-
+@property (strong, nonatomic) IBOutlet UILabel *hentaiPageNumber;
 @end
