@@ -13,7 +13,7 @@
 @interface Pad_Main_VCLR ()
 {
 	BOOL enableH_Image;
-	BOOL zBoolNotDownLoadMode;
+	BOOL zBoolIsAskPictureMode;
 	NSString *searchWord;
 	HentaiFilterView *filterView;
 }
@@ -28,12 +28,6 @@
 
 @implementation Pad_Main_VCLR
 
-
-- (void)didReceiveMemoryWarning {
-	[super didReceiveMemoryWarning];
-	// Dispose of any resources that can be recreated.
-}
-
 - (void)viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hentaiDownloadSuccess:) name:HentaiDownloadSuccessNotification object:nil];
@@ -42,6 +36,8 @@
 - (void)viewWillDisappear:(BOOL)animated {
 	[super viewWillDisappear:animated];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:HentaiDownloadSuccessNotification object:nil];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
 }
 
 - (void)dealloc {
@@ -54,70 +50,71 @@
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-    
-	zBoolNotDownLoadMode = NO;
-    
+
+	zBoolIsAskPictureMode = NO;
+
 	self.listIndex = 0;
 	enableH_Image = NO;
 	self.listArray = [NSMutableArray array];
 	searchWord = @"";
-    
-    
-	[self zMethDoListCollectionView];
+
+
+	[self zMethCreateListCollectionView];
 	[self zMethCreateNavBarBtn];
-	[self zMethDoSearchBar];
-    
+	[self zMethCreateSearchBar];
+	[self zMethCleanImageCache];
+
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChange:) name:UIKeyboardWillShowNotification object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChange:) name:UIKeyboardWillHideNotification object:nil];
 }
 
-#pragma mark - UI
+#pragma mark - CreateUI & Set
 
 - (void)zMethCreateNavBarBtn {
-	UIBarButtonItem *changeModeItem0 = [[UIBarButtonItem alloc] initWithTitle:@"H圖" style:UIBarButtonItemStylePlain target:self action:@selector(changeImageMode0:)];
-	UIBarButtonItem *changeModeItem1 = [[UIBarButtonItem alloc] initWithTitle:@"See" style:UIBarButtonItemStylePlain target:self action:@selector(changeImageMode1:)];
-    
-	self.navigationItem.rightBarButtonItems = [NSArray arrayWithObjects:changeModeItem0, changeModeItem1, nil];
+	UIBarButtonItem *changeThumbModeItem = [[UIBarButtonItem alloc] initWithTitle:@"H圖" style:UIBarButtonItemStylePlain target:self action:@selector(changeImageMode0:)];
+	UIBarButtonItem *pushBtnAskModeItem = [[UIBarButtonItem alloc] initWithTitle:@"See" style:UIBarButtonItemStylePlain target:self action:@selector(changeImageMode1:)];
+
+	self.navigationItem.rightBarButtonItems = [NSArray arrayWithObjects:changeThumbModeItem, pushBtnAskModeItem, nil];
 }
 
-- (void)zMethDoListCollectionView {
+- (void)zMethCreateListCollectionView {
 	if (!self.listCollectionView) {
 		UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
 		self.listCollectionView = [[UICollectionView alloc]initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen]bounds].size.width, [[UIScreen mainScreen]bounds].size.height) collectionViewLayout:layout];
 		self.listCollectionView.delegate = self;
 		self.listCollectionView.dataSource = self;
-        
-        //    [self.listCollectionView registerClass:[GalleryCell class] forCellWithReuseIdentifier:@"GalleryCell"];
-        
+
+		//    [self.listCollectionView registerClass:[GalleryCell class] forCellWithReuseIdentifier:@"GalleryCell"];
+
 		[self.listCollectionView registerNib:[UINib nibWithNibName:@"GalleryCell" bundle:nil] forCellWithReuseIdentifier:@"GalleryCell"];
-        
+
 		[HentaiParser requestListAtIndex:self.listIndex completion: ^(HentaiParserStatus status, NSArray *listArray) {
-		    [self.listArray addObjectsFromArray:listArray];
-		    [self.listCollectionView reloadData];
+			[self.listArray addObjectsFromArray:listArray];
+			[self.listCollectionView reloadData];
 		}];
 	}
-    
+
 	[self.view addSubview:self.listCollectionView];
-    
+
 	//add refresh control
 	self.refreshControl = [[UIRefreshControl alloc]init];
 	[self.listCollectionView addSubview:self.refreshControl];
 	[self.refreshControl addTarget:self
-	                        action:@selector(reloadDatas)
-	              forControlEvents:UIControlEventValueChanged];
+							action:@selector(reloadDatas)
+				  forControlEvents:UIControlEventValueChanged];
 }
 
-- (void)zMethDoSearchBar {
+- (void)zMethCreateSearchBar {
 	//search bar
 	self.searchBar = [[UISearchBar alloc] init];
 	self.navigationItem.titleView = self.searchBar;
 	self.searchBar.delegate = self;
-    
+
 	//調整畫面的大小
 	CGRect screenSize = [UIScreen mainScreen].bounds;
 	self.view.frame = screenSize;
 	self.listCollectionView.frame = screenSize;
-    
+
 	//調整 filterView 的大小
 	CGFloat keyboardHeight = 412;
 	CGRect filterFrame = CGRectMake(0, 0, CGRectGetWidth(screenSize), CGRectGetHeight(screenSize) - keyboardHeight - 64);
@@ -125,30 +122,30 @@
 	self.searchBar.inputAccessoryView = filterView;
 }
 
-#pragma mark - Function
+#pragma mark - Method
 
 - (void)reloadDatas {
 	self.listIndex = 0;
 	__weak Pad_Main_VCLR *weakSelf = self;
-    
+
 	NSString *baseUrlString = [NSString stringWithFormat:@"http://g.e-hentai.org/?page=%d", self.listIndex];
 	NSString *filterString = [HentaiSearchFilter searchFilterUrlByKeyword:searchWord filterArray:[filterView filterResult] baseUrl:baseUrlString];
-    
+
 	[HentaiParser requestListAtFilterUrl:filterString completion: ^(HentaiParserStatus status, NSArray *listArray) {
-	    if (status && weakSelf) {
-	        [weakSelf.listArray removeAllObjects];
-	        [weakSelf.listArray addObjectsFromArray:listArray];
-	        [weakSelf.listCollectionView reloadData];
-	        [weakSelf.listCollectionView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
-	        [weakSelf.refreshControl endRefreshing];
+		if (status && weakSelf) {
+			[weakSelf.listArray removeAllObjects];
+			[weakSelf.listArray addObjectsFromArray:listArray];
+			[weakSelf.listCollectionView reloadData];
+			[weakSelf.listCollectionView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
+			[weakSelf.refreshControl endRefreshing];
 		}
-	    else {
-	        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"錯誤"
-	                                                        message:@"讀取失敗"
-	                                                       delegate:nil
-	                                              cancelButtonTitle:@""
-	                                              otherButtonTitles:nil];
-	        [alert show];
+		else {
+			UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"錯誤"
+															message:@"讀取失敗"
+														   delegate:nil
+												  cancelButtonTitle:@""
+												  otherButtonTitles:nil];
+			[alert show];
 		}
 	}];
 }
@@ -159,37 +156,39 @@
 	[[SDImageCache sharedImageCache] clearDisk];
 }
 
-#pragma mark - Action
+#pragma mark - User Action
 
 - (void)changeImageMode0:(UIBarButtonItem *)sender {
 	enableH_Image = !enableH_Image;
-    
+
 	if (enableH_Image) {
 		sender.title = @"貓圖";
 	}
 	else {
 		sender.title = @"H圖";
 	}
-    
+
 	[self.listCollectionView reloadData];
 }
 
 - (void)changeImageMode1:(UIBarButtonItem *)sender {
-	zBoolNotDownLoadMode = !zBoolNotDownLoadMode;
-    
-	if (zBoolNotDownLoadMode) {
+	zBoolIsAskPictureMode = !zBoolIsAskPictureMode;
+
+	if (zBoolIsAskPictureMode) {
 		sender.title = @"Ask";
 	}
 	else {
 		sender.title = @"See";
 	}
-    
+
 	[self.listCollectionView reloadData];
 }
 
+///TODO:等SearchFilter
 - (void)keyboardWillChange:(NSNotification *)notification {
-	CGRect keyboardEndRect = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-	NSLog(@"KeyBoardFrame=[%f][%f][%f][%f]", keyboardEndRect.origin.x, keyboardEndRect.origin.y, keyboardEndRect.size.width, keyboardEndRect.size.height);
+	//	CGRect keyboardEndRect = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+	//	NSLog(@"keyboardEndRect.origin.y=[%f]", keyboardEndRect.origin.y);
+	//	NSLog(@"keyboardEndRect.size.height=[%f]",  keyboardEndRect.size.height);
 }
 
 #pragma mark -  UISearchBarDelegate
@@ -197,7 +196,7 @@
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
 	self.searchBar.showsCancelButton = YES;
-    
+
 	if ([searchBar.text isEqualToString:@""]) {
 		[filterView selectAll];
 	}
@@ -234,7 +233,7 @@
 			}
 		}
 	}
-    
+
 	if (searchField) {
 		searchField.enablesReturnKeyAutomatically = NO;
 	}
@@ -249,16 +248,16 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
 	//無限滾
 	if (
-	    indexPath.row >= [self.listArray count] - 1
-        //		&&[self.listArray count] == (self.listIndex+1)*25
-	    ) {
+		indexPath.row >= [self.listArray count] - 1
+		//		&&[self.listArray count] == (self.listIndex+1)*25
+		) {
 		self.listIndex++;
 		NSString *baseUrlString = [NSString stringWithFormat:@"http://g.e-hentai.org/?page=%d", self.listIndex];
 		NSString *filterString = [HentaiSearchFilter searchFilterUrlByKeyword:searchWord filterArray:[filterView filterResult] baseUrl:baseUrlString];
-        
+
 		[HentaiParser requestListAtFilterUrl:filterString completion: ^(HentaiParserStatus status, NSArray *listArray) {
-		    [self.listArray addObjectsFromArray:listArray];
-		    [self.listCollectionView reloadData];
+			[self.listArray addObjectsFromArray:listArray];
+			[self.listCollectionView reloadData];
 		}];
 	}
 	GalleryCell *cell = (GalleryCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"GalleryCell" forIndexPath:indexPath];
@@ -268,34 +267,34 @@
 	return cell;
 }
 
+#pragma mark - UICollectionViewDelegate
+
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    //	NSLog(@"do[%f][%f]",[[UIScreen mainScreen]bounds].size.width,[[UIScreen mainScreen]bounds].size.height);
 	return CGSizeMake(140, 210);
 }
 
-#pragma mark - UICollectionViewDelegate
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	NSDictionary *hentaiInfo = self.listArray[indexPath.row];
 	BOOL isExist = NO;
-    
+
 	for (NSDictionary *eachSavedInfo in HentaiSaveLibraryArray) {
 		if ([eachSavedInfo[@"hentaiInfo"][@"url"] isEqualToString:hentaiInfo[@"url"]]) {
 			isExist = YES;
 			break;
 		}
 	}
-    
+
 	if (isExist) {
-		[self zMethPushToNext:hentaiInfo];
+		[self zMethPushToNextSeeComicPage:hentaiInfo];
 	}
 	else {
-		if (zBoolNotDownLoadMode) {
+		if (zBoolIsAskPictureMode) {
 			UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"請問要下載還是直接看" message:@"請搶答~ O3O" delegate:self cancelButtonTitle:@"直接看!" otherButtonTitles:@"下載!", nil];
 			alert.tag = indexPath.row;
 			[alert show];
 		}
 		else {
-			[self zMethPushToNext:hentaiInfo];
+			[self zMethPushToNextSeeComicPage:hentaiInfo];
 		}
 	}
 }
@@ -313,20 +312,20 @@
 			[alert show];
 		}
 		else {
-			[self zMethPushToNext:hentaiInfo];
+			[self zMethPushToNextSeeComicPage:hentaiInfo];
 		}
 	}
 }
 
-- (void)zMethPushToNext:(NSDictionary *)hentaiInfo {
+- (void)zMethPushToNextSeeComicPage:(NSDictionary *)hentaiInfo {
 	HentaiNavigationController *hentaiNavigation = (HentaiNavigationController *)self.navigationController;
 	hentaiNavigation.autorotate = YES;
 	hentaiNavigation.hentaiMask = UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskLandscape;
-    
-	if (zBoolNotDownLoadMode) {
+
+	if (zBoolIsAskPictureMode) {
 		PhotoViewController *photoViewController = [PhotoViewController new];
 		photoViewController.hentaiInfo = hentaiInfo;
-        
+
 		[hentaiNavigation pushViewController:photoViewController animated:YES];
 	}
 	else {
