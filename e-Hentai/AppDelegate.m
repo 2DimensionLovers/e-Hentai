@@ -14,7 +14,7 @@
 	self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
 	//區分iPad
 	HentaiNavigationController *hentaiNavigation;
-	if ([[UIDevice currentDevice].model isEqualToString:@"iPad"]) {
+	if ([[UIDevice currentDevice].model isEqualToString:@"iPad"] || [[UIDevice currentDevice].model isEqualToString:@"iPad Simulator"]) {
 		hentaiNavigation = [[HentaiNavigationController alloc] initWithRootViewController:[Pad_Main_VCLR new]];
 	}
 	else {
