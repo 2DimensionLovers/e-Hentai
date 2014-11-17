@@ -14,7 +14,6 @@
                            filterArray:(NSArray *)filterArray
                                baseUrl:(NSString *)baseUrl {
 	NSString *filterUrl = [[NSString alloc] initWithString:baseUrl];
-    
 	//do nothing
 	if ([searchWord isEqualToString:@""] && filterArray.count == 0) {
 		return filterUrl;
@@ -38,8 +37,9 @@
 		}
 	}
     
-	if (![searchWord isEqualToString:@""]) {
-		filterUrl = [filterUrl stringByAppendingString:[NSString stringWithFormat:@"&f_search=%@", searchWord]];
+    if (![searchWord isEqualToString:@""]) {
+        NSString *correctedSearchWord = [[searchWord stringByReplacingOccurrencesOfString:@" " withString:@"+"]stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+		filterUrl = [filterUrl stringByAppendingString:[NSString stringWithFormat:@"&f_search=%@", correctedSearchWord]];
 	}
     
 	//apply
